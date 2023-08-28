@@ -129,7 +129,7 @@ def refresh_account(uid):
            write_ac(uid=uid, field_name='runway', update_value="On track")
 
        else:
-           write_ac(uid=uid, field_name='runway', update_value=runway_days)
+           write_ac(uid=uid, field_name='runway', update_value=str(runway_days))
 
        print(f'tab: {tab}')
        print(f'ideal spend: {ideal_spend}')
