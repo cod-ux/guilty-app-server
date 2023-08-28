@@ -55,7 +55,7 @@ def refresh_account(uid):
     #output required: day balance & runway
     #first output: day balance
     #check whether a document field called account_balance exists
-  with app.app_context():
+
     access_token = get_access_token(uid)
 
     if not 'account_balance' in users_ref.document(uid).collection('account').document('account_data').get().to_dict():
