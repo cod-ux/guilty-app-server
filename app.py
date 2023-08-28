@@ -172,17 +172,28 @@ def reset_budget():
 
 #code to run a flask app and check new period simultaneously
 
-@app.route('/create_account', methods = ['GET'])
+@app.route('/create_account', methods = ['POST'])
 def create_doc_route():
-    uid = flask.request.args.get('uid')
-    create_new_user(user_id=uid)
-    return "Successful", 200
+    #code to read uid from json body
+    data = request.get_json()
 
-@app.route('/refresh_account', methods = ['GET'])
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    uid = data.get("user_ref")
+    response = create_new_user(user_id=uid)
+    return response
+
+@app.route('/refresh_account', methods = ['POST'])
 def refresh_account_route():
-    uid = flask.request.args.get('uid')
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    uid = data.get("user_ref")
     response = refresh_account(uid=uid)
-    return "response"
+    return response
 
 schedule.every().day.at("00:00").do(reset_budget)
 
