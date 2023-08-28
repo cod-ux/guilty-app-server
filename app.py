@@ -71,6 +71,7 @@ def refresh_account(uid):
        new_balance = pld.get_real_balance(access_token)
 
     except Exception as e:
+        print(e)
         return str(e), 404
 
     else: 
@@ -129,6 +130,14 @@ def refresh_account(uid):
 
        else:
            write_ac(uid=uid, field_name='runway', update_value=runway_days)
+
+       print(f'tab: {tab}')
+       print(f'ideal spend: {ideal_spend}')
+       print(f'day balance: {day_balance}')
+       print(f'runway: {runway_days}')
+       print(f'avg spending rate: {avg_spending_rate}')
+       print(f'max days: {max_days}')
+       print(f'days running: {days_running}')
 
        return 'Account successfully refreshed', 200
 
