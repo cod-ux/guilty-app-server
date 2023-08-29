@@ -46,10 +46,10 @@ def create_new_user(user_id):
        })
 
     except Exception as e:
-        return str(e), 404
+        return jsonify({"message": False}), 404
 
     else:
-        return 'User account successfully created', 200
+        return jsonify({"message": True}), 200
 
 def refresh_account(uid):
     #output required: day balance & runway
@@ -72,7 +72,7 @@ def refresh_account(uid):
 
     except Exception as e:
         print(e)
-        return str(e), 404
+        return jsonify({"message": False}), 404
 
     else: 
        spent = -(read_ac(uid=uid)['account_balance'] - new_balance)
@@ -142,7 +142,7 @@ def refresh_account(uid):
        print(f'max days: {max_days}')
        print(f'days running: {days_running}')
 
-       return 'Account successfully refreshed', 200
+       return jsonify({"message": True}), 200
 
 
 def reset_budget():
