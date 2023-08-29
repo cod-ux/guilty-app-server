@@ -132,6 +132,7 @@ def refresh_account(uid):
            write_ac(uid=uid, field_name='runway', update_value=str(runway_days))
 
        print(f'tab: {tab}')
+       print(f'spent: {spent}')
        print(f'ideal spend: {ideal_spend}')
        print(f'day balance: {day_balance}')
        print(f'runway: {runway_days}')
