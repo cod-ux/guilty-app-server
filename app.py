@@ -106,6 +106,8 @@ def refresh_account(uid):
        #write day balance
        write_ac(uid=uid, field_name='day_balance', update_value=day_balance)
 
+       write_ac(uid=uid, field_name='account_balance', update_value=new_balance)
+
        #second output: runway
 
        if days_running == 1:
