@@ -134,16 +134,20 @@ def refresh_account(uid):
        else:
            write_ac(uid=uid, field_name='runway', update_value=str(runway_days))
 
-       print(f'tab: {tab}')
-       print(f'spent: {spent}')
-       print(f'ideal spend: {ideal_spend}')
-       print(f'day balance: {day_balance}')
-       print(f'runway: {runway_days}')
-       print(f'avg spending rate: {avg_spending_rate}')
-       print(f'max days: {max_days}')
-       print(f'days running: {days_running}')
-
        return jsonify({"message": True}), 200
+
+def update_mb(uid, new_mb):
+    old_mb = read_ac(uid=uid)['monthly_budget']
+    write_ac(uid=uid, field_name='monthly_budget', update_value=new_mb)
+    try:
+      refresh_account(uid=uid)
+
+    except Exception as e:
+        write_ac(uid=uid, field_name='monthly_budget', update_value=old_mb)
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    else:
+        return jsonify({"message": True}), 200
 
 #new period function
 def reset_budget():
@@ -172,6 +176,8 @@ def reset_budget():
             write_ac(uid=uid, field_name='start_date', update_value=datetime.datetime.now(pytz.UTC))
             refresh_account(uid=uid)
 
+
+
 #refresh_account('42xGhEiG9Fe0YZ2DAOBoFHTDEYF2')
 
 @app.route('/create_account', methods = ['POST'])
@@ -197,9 +203,17 @@ def refresh_account_route():
     response = refresh_account(uid=uid)
     return response
 
-#@app.route('/update_mb', methods = ['POST'])
-#@app.route('/update_mb', methods = ['POST'])
-#@app.route('/update_mb', methods = ['POST'])
+@app.route('/update_mb', methods = ['POST'])
+def update_mb_route():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    uid = data.get("user_ref")
+    new_mb = data.get("new_mb")
+    response = update_mb(uid=uid, new_mb=new_mb)
+    return response
 
 # tool functions
 schedule.every().day.at("00:00").do(reset_budget)
