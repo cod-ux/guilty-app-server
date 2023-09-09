@@ -20,7 +20,7 @@ db = firestore.client()
 users_ref = db.collection('users')
 
 
-
+# tool functions
 def get_access_token(uid):
     return users_ref.document(uid).collection('account').document('account_data').get().to_dict()['access_token']
 
@@ -32,7 +32,7 @@ def write_ac(uid, field_name, update_value):
 
 
 
-#function to add a collection called account to a user document given a document id
+#create end point
 def create_new_user(user_id):
     try:
        user_ref = users_ref.document(user_id)
@@ -51,6 +51,7 @@ def create_new_user(user_id):
     else:
         return jsonify({"message": True}), 200
 
+# refresh account endpoint
 def refresh_account(uid):
     #output required: day balance & runway
     #first output: day balance
@@ -144,7 +145,7 @@ def refresh_account(uid):
 
        return jsonify({"message": True}), 200
 
-
+#new period function
 def reset_budget():
     #check if it is over 30 days since the start date
     #if yes, reset tab, start date and trigger refresh_account
@@ -173,8 +174,6 @@ def reset_budget():
 
 #refresh_account('42xGhEiG9Fe0YZ2DAOBoFHTDEYF2')
 
-#code to run a flask app and check new period simultaneously
-
 @app.route('/create_account', methods = ['POST'])
 def create_doc_route():
     #code to read uid from json body
@@ -198,6 +197,11 @@ def refresh_account_route():
     response = refresh_account(uid=uid)
     return response
 
+#@app.route('/update_mb', methods = ['POST'])
+#@app.route('/update_mb', methods = ['POST'])
+#@app.route('/update_mb', methods = ['POST'])
+
+# tool functions
 schedule.every().day.at("00:00").do(reset_budget)
 
 def run_schedule():
