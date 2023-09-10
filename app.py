@@ -257,7 +257,7 @@ def update_start_date_route():
     uid = data.get("user_ref")
     new_start_date = data.get("start_date")
     #convert string to date object
-    new_start_date = datetime.datetime.strptime(new_start_date, '%Y-%m-%d')
+    new_start_date = datetime.datetime.strptime(new_start_date, '%Y-%m-%d %H:%M:%S.%f')
     response = update_start_date(uid=uid, new_start_date=new_start_date)
     return response
 
