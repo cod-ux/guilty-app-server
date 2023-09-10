@@ -157,7 +157,7 @@ def update_start_date(uid, new_start_date):
 
     except Exception as e:
         write_ac(uid=uid, field_name='start_date', update_value=old_start_date)
-        return jsonify({"error": "Invalid JSON data"}), 400
+        return jsonify({"error": "Could not refresh account"}), 400
 
     else:
         return jsonify({"message": True}), 200
@@ -180,9 +180,6 @@ def update_savings(uid, savings_addition, action):
 
     else:
         return jsonify({"message": True}), 200
-
-def update_savings(uid, savings_addition, action):
-    pass
 
 #new period function
 def reset_budget():
