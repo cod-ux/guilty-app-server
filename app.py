@@ -284,7 +284,7 @@ def run_schedule():
         time.sleep(1)
 
 if __name__ == '__main__':
-    flask_thread = threading.Thread(target=app.run(debug=True, host = '77.68.119.174', port=5000), kwargs={'debug': True})
+    flask_thread = threading.Thread(target=app.run(debug=True, host = '77.68.119.174', port=80), kwargs={'debug': True})
     flask_thread.start()
 
     schedule_thread = threading.Thread(target=run_schedule)
