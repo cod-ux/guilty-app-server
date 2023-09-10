@@ -149,6 +149,39 @@ def update_mb(uid, new_mb):
     else:
         return jsonify({"message": True}), 200
 
+def update_start_date(uid, new_start_date):
+    old_start_date = read_ac(uid=uid)['start_date']
+    write_ac(uid=uid, field_name='start_date', update_value=new_start_date)
+    try:
+      refresh_account(uid=uid)
+
+    except Exception as e:
+        write_ac(uid=uid, field_name='start_date', update_value=old_start_date)
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    else:
+        return jsonify({"message": True}), 200
+
+def update_savings(uid, savings_addition, action):
+    old_savings = read_ac(uid=uid)['savings']
+    new_savings = old_savings
+    if action == "add":
+        new_savings = old_savings + savings_addition
+    elif action == "reduce":
+        new_savings = old_savings - savings_addition
+
+    write_ac(uid=uid, field_name='savings', update_value=new_savings)
+    try:
+      refresh_account(uid=uid)
+
+    except Exception as e:
+        write_ac(uid=uid, field_name='savings', update_value=old_savings)
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    else:
+        return jsonify({"message": True}), 200
+
+
 #new period function
 def reset_budget():
     #check if it is over 30 days since the start date
@@ -213,6 +246,33 @@ def update_mb_route():
     uid = data.get("user_ref")
     new_mb = data.get("new_mb")
     response = update_mb(uid=uid, new_mb=new_mb)
+    return response
+
+@app.route('/update_start_date', methods = ['POST'])
+def update_start_date_route():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    uid = data.get("user_ref")
+    new_start_date = data.get("start_date")
+    #convert string to date object
+    new_start_date = datetime.datetime.strptime(new_start_date, '%Y-%m-%d')
+    response = update_start_date(uid=uid, new_start_date=new_start_date)
+    return response
+
+@app.route('/update_savings', methods = ['POST'])
+def update_savings_route():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    uid = data.get("user_ref")
+    savings_addition = data.get("savings_addition")
+    action = data.get("action")
+    response = update_savings(uid=uid, savings_addition=savings_addition, action=action)
     return response
 
 # tool functions
