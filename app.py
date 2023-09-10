@@ -246,7 +246,7 @@ def update_mb_route():
         return jsonify({"error": "Invalid JSON data"}), 400
 
     uid = data.get("user_ref")
-    new_mb = data.get("monthly_budget")
+    new_mb = data.get("new_mb")
     response = update_mb(uid=uid, new_mb=new_mb)
     return response
 
