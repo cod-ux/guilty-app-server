@@ -149,14 +149,17 @@ def update_mb(uid, new_mb):
     else:
         return jsonify({"message": True}), 200
 
-def update_start_date(uid, new_start_date):
+def update_start_date(uid, new_start_date, new_tab):
     old_start_date = read_ac(uid=uid)['start_date']
     write_ac(uid=uid, field_name='start_date', update_value=new_start_date)
+    old_tab = read_ac(uid=uid)['tab']
+    write_ac(uid=uid, field_name='tab', update_value=new_tab)
     try:
       refresh_account(uid=uid)
 
     except Exception as e:
         write_ac(uid=uid, field_name='start_date', update_value=old_start_date)
+        write_ac(uid=uid, field_name='tab', update_value=old_tab)
         return jsonify({"error": "Could not refresh account"}), 400
 
     else:
@@ -256,9 +259,10 @@ def update_start_date_route():
 
     uid = data.get("user_ref")
     new_start_date = data.get("start_date")
+    new_tab = data.get("tab")
     #convert string to date object
     new_start_date = datetime.datetime.strptime(new_start_date, '%Y-%m-%d %H:%M:%S.%f')
-    response = update_start_date(uid=uid, new_start_date=new_start_date)
+    response = update_start_date(uid=uid, new_start_date=new_start_date, new_tab=new_tab)
     return response
 
 @app.route('/update_savings', methods = ['POST'])
