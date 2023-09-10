@@ -144,7 +144,7 @@ def update_mb(uid, new_mb):
 
     except Exception as e:
         write_ac(uid=uid, field_name='monthly_budget', update_value=old_mb)
-        return jsonify({"error": "Invalid JSON data"}), 400
+        return jsonify({"error": f"{e}"}), 400
 
     else:
         return jsonify({"message": True}), 200
@@ -162,7 +162,7 @@ def update_start_date(uid, new_start_date):
     else:
         return jsonify({"message": True}), 200
 
-'''def update_savings(uid, savings_addition, action):
+def update_savings(uid, savings_addition, action):
     old_savings = read_ac(uid=uid)['savings']
     new_savings = old_savings
     if action == "add":
@@ -179,7 +179,7 @@ def update_start_date(uid, new_start_date):
         return jsonify({"error": "Invalid JSON data"}), 400
 
     else:
-        return jsonify({"message": True}), 200'''
+        return jsonify({"message": True}), 200
 
 def update_savings(uid, savings_addition, action):
     pass
@@ -245,8 +245,10 @@ def update_mb_route():
     if not data:
         return jsonify({"error": "Invalid JSON data"}), 400
 
-    else:
-        return "hello", 200
+    uid = data.get("user_ref")
+    new_mb = data.get("monthly_budget")
+    response = update_mb(uid=uid, new_mb=new_mb)
+    return response
 
 @app.route('/update_start_date', methods = ['POST'])
 def update_start_date_route():
