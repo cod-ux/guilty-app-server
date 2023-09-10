@@ -245,13 +245,8 @@ def update_mb_route():
 
     uid = data.get("user_ref")
     new_mb = data.get("new_mb")
-    print(new_mb)
-    print(type(new_mb))
-    old_mb = read_ac(uid=uid)['monthly_budget']
-    print(old_mb)
-    print(type(old_mb))
-    response = update_mb(uid=uid, new_mb=new_mb)
-    return response
+    #response = update_mb(uid=uid, new_mb=new_mb)
+    return "hello", 200
 
 @app.route('/update_start_date', methods = ['POST'])
 def update_start_date_route():
