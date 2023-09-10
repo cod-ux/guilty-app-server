@@ -138,10 +138,6 @@ def refresh_account(uid):
 
 def update_mb(uid, new_mb):
     old_mb = read_ac(uid=uid)['monthly_budget']
-    print(old_mb)
-    print(type(old_mb))
-    print(new_mb)
-    print(type(new_mb))
     write_ac(uid=uid, field_name='monthly_budget', update_value=new_mb)
     try:
       refresh_account(uid=uid)
@@ -249,6 +245,11 @@ def update_mb_route():
 
     uid = data.get("user_ref")
     new_mb = data.get("new_mb")
+    print(new_mb)
+    print(type(new_mb))
+    old_mb = read_ac(uid=uid)['monthly_budget']
+    print(old_mb)
+    print(type(old_mb))
     response = update_mb(uid=uid, new_mb=new_mb)
     return response
 
