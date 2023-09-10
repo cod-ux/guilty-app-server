@@ -168,12 +168,17 @@ def update_start_date(uid, new_start_date, new_tab):
 def update_savings(uid, savings_addition, action):
     old_savings = read_ac(uid=uid)['savings']
     new_savings = old_savings
+    ad_s = read_ac(uid=uid)['added_savings']
+    new_ad_s = ad_s
     if action == "add":
         new_savings = old_savings + savings_addition
+        new_ad_s = ad_s - savings_addition
     elif action == "reduce":
         new_savings = old_savings - savings_addition
+        new_ad_s = ad_s + savings_addition
 
     write_ac(uid=uid, field_name='savings', update_value=new_savings)
+    write_ac(uid=uid, field_name='added_savings', update_value=new_ad_s)
     try:
       refresh_account(uid=uid)
 
