@@ -273,7 +273,7 @@ def update_savings_route():
         return jsonify({"error": "Invalid JSON data"}), 400
 
     uid = data.get("user_ref")
-    savings_addition = data.get("savings_addition")
+    savings_addition = data.get("change")
     action = data.get("action")
     response = update_savings(uid=uid, savings_addition=savings_addition, action=action)
     return response
