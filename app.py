@@ -79,7 +79,7 @@ def refresh_account(uid):
        spent = read_ac(uid=uid)['account_balance'] - new_balance
 
        #write spent amount as last_change_to_tab in firebase
-       if spent > 0:
+       if read_ac(uid=uid)['last_change_to_tab'] > 0:
           pass
 
        else:
