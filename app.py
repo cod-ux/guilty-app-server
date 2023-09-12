@@ -78,6 +78,11 @@ def refresh_account(uid):
     else: 
        spent = read_ac(uid=uid)['account_balance'] - new_balance
 
+       #write spent amount as last_change_to_tab in firebase
+       users_ref.document(uid).collection('account').document('account_data').update({
+        'last_change_to_tab': spent
+       })
+
        #write end date as 30 days from start date
        start_date = read_ac(uid=uid)['start_date']
        end_date = start_date + datetime.timedelta(days=30)
