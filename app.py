@@ -76,7 +76,7 @@ def refresh_account(uid):
         return jsonify({"message": False}), 404
 
     else: 
-       spent = -(read_ac(uid=uid)['account_balance'] - new_balance)
+       spent = read_ac(uid=uid)['account_balance'] - new_balance
 
        #write end date as 30 days from start date
        start_date = read_ac(uid=uid)['start_date']
@@ -94,7 +94,7 @@ def refresh_account(uid):
        days_running = (datetime.datetime.now(pytz.UTC) - start_date).days + 1 
 
        #calculate daily limit, which is monthly budget divided by 30
-       daily_limit = read_ac(uid=uid)['monthly_budget'] / 30
+       daily_limit = read_ac(uid=uid)['monthly_budget'] / 30 #change to days in period
 
        write_ac(uid=uid, field_name='day_add', update_value=daily_limit)
 
@@ -126,7 +126,7 @@ def refresh_account(uid):
        else:
            max_days = (read_ac(uid=uid)['monthly_budget'] - read_ac(uid=uid)['tab']) / avg_spending_rate
        #calculate runway_days, which is max days minus days running minus 31
-       runway_days = max_days - days_running + 31
+       runway_days = max_days - days_running + 31 #days_in_period + 1
     
        if runway_days >= 0:
            write_ac(uid=uid, field_name='runway', update_value="On track")
