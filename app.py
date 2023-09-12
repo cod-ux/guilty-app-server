@@ -216,6 +216,7 @@ def reset_budget():
     #trigger check new period every day
     for user in users_ref.stream():
         uid = user.id
+        resp = refresh_account(uid=uid)
         start_date = read_ac(uid=uid)['start_date']
         if (datetime.datetime.now(pytz.UTC) - start_date).days >= 30:
             if read_ac(uid=uid)['day_balance'] > 0:
