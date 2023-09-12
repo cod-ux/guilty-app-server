@@ -165,6 +165,20 @@ def update_start_date(uid, new_start_date, new_tab):
     else:
         return jsonify({"message": True}), 200
 
+def exclude_transaction(uid, transaction_amount):
+    old_tab = read_ac(uid=uid)['tab']
+    new_tab = old_tab - transaction_amount
+    write_ac(uid=uid, field_name='tab', update_value=new_tab)
+    try:
+      refresh_account(uid=uid)
+
+    except Exception as e:
+        write_ac(uid=uid, field_name='tab', update_value=old_tab)
+        return jsonify({"error": "Could not refresh account"}), 400
+
+    else:
+        return jsonify({"message": True}), 200
+
 def update_savings(uid, savings_addition, action):
     old_savings = read_ac(uid=uid)['savings']
     new_savings = old_savings
@@ -215,8 +229,6 @@ def reset_budget():
             write_ac(uid=uid, field_name='tab', update_value=0)
             write_ac(uid=uid, field_name='start_date', update_value=datetime.datetime.now(pytz.UTC))
             refresh_account(uid=uid)
-
-
 
 #refresh_account('42xGhEiG9Fe0YZ2DAOBoFHTDEYF2')
 
@@ -281,6 +293,18 @@ def update_savings_route():
     savings_addition = data.get("change")
     action = data.get("action")
     response = update_savings(uid=uid, savings_addition=savings_addition, action=action)
+    return response
+
+@app.route('/exclude_transaction', methods = ['POST'])
+def exclude_transaction_route():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "Invalid JSON data"}), 400
+
+    uid = data.get("user_ref")
+    transaction_amount = data.get("transaction_amount")
+    response = exclude_transaction(uid=uid, transaction_amount=transaction_amount)
     return response
 
 # tool functions
