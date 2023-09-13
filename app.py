@@ -64,7 +64,8 @@ def refresh_account(uid):
         users_ref.document(uid).collection('account').document('account_data').update({
             'account_balance': pld.get_real_balance(access_token),
             'added_savings': 0,
-            'savings': 0
+            'savings': 0,
+            'last_change_to_tab': 0
         })
     
     #calculate money spent from last time
@@ -77,10 +78,14 @@ def refresh_account(uid):
 
     else: 
        spent = read_ac(uid=uid)['account_balance'] - new_balance
+       #create a field last_change_to_tab if it doesn't exist
+       if not 'last_change_to_tab' in users_ref.document(uid).collection('account').document('account_data').get().to_dict():
+              users_ref.document(uid).collection('account').document('account_data').update({
+                'last_change_to_tab': 0
+              })
 
        #write spent amount as last_change_to_tab in firebase
-       account_data = read_ac(uid=uid)
-       if account_data.get('last_change_to_tab', 0) > 0:
+       if read_ac(uid=uid)['last_change_to_tab'] > 0:
           pass
 
        else:
@@ -177,7 +182,7 @@ def update_start_date(uid, new_start_date, new_tab):
 
 def exclude_transaction(uid, transaction_amount):
     old_tab = read_ac(uid=uid)['tab']
-    new_tab = old_tab - transaction_amount
+    new_tab = old_tab + transaction_amount
     write_ac(uid=uid, field_name='tab', update_value=new_tab)
     try:
       refresh_account(uid=uid)
