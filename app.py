@@ -33,20 +33,21 @@ def write_ac(uid, field_name, update_value):
 
 
 #create end point
-def create_new_user(user_id):
+def create_new_user(user_id, mb, tab, start_date):
     try:
        user_ref = users_ref.document(user_id)
        #create a new collection called account with three fields - monthly budget, tab, start date (datetimeobject)
+       start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d %H:%M:%S.%f')
        user_ref.collection('account').document('account_data').set({
-           'monthly_budget': 0,
-           'tab': 0,
-           'start_date': None,
-           'end_date': None,
+           'monthly_budget': mb,
+           'tab': tab,
+           'start_date': start_date,
+           'end_date': start_date + datetime.timedelta(days=30),
            'access_token': ""
        })
 
     except Exception as e:
-        return jsonify({"message": False}), 404
+        return jsonify({"error": e}), 404
 
     else:
         return jsonify({"message": True}), 200
@@ -92,11 +93,6 @@ def refresh_account(uid):
           users_ref.document(uid).collection('account').document('account_data').update({
            'last_change_to_tab': spent
           })
-
-       #write end date as 30 days from start date
-       start_date = read_ac(uid=uid)['start_date']
-       end_date = start_date + datetime.timedelta(days=30)
-       write_ac(uid=uid, field_name='end_date', update_value=end_date)
     
        #write tab
        tab = read_ac(uid=uid)['tab']
@@ -257,7 +253,10 @@ def create_doc_route():
         return jsonify({"error": "Invalid JSON data"}), 400
 
     uid = data.get("user_ref")
-    response = create_new_user(user_id=uid)
+    mb = data.get("monthly_budget")
+    tab = data.get("tab")
+    start_date = data.get("start_date")
+    response = create_new_user(user_id=uid, mb=mb, tab=tab, start_date=start_date)
     return response
 
 @app.route('/refresh_account', methods = ['POST'])
