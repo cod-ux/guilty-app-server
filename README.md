@@ -1,4 +1,4 @@
-# The Guilty server
+# The Guilty App - server
 
 A budgeting dashboard built for mobile with flutter for the front end and Python for the backend. This is repo is the backend of the application.
 
